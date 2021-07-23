@@ -3,7 +3,7 @@ from telegram.ext import *
 import logging
 import connection_dbpedia as dbpedia
 import connection_lojanitaPizza as lojanita
-#import demo_spacy as analysis
+import npl_spacy as textspacy
 import Constants as keys
 import menu
 import responses
@@ -163,6 +163,7 @@ def start_command(update, context):
         "\n/listPizza -> muestra el listado de pizzas de LojanitaPizza"
         "\n/pizza -> muestra las pizzas que puedes buscar"
         "\n/listaCarnes -> muestra el tipo de carnes para tus pizzas "
+        "\n/npl -> Procesamiento de lenguaje natural"
         "\n/listaEmbutidos -> muestra los tipos de embutidos para tus pizzas ")
        #"\n/ingredients \"nombre de la pizza\" -> permite buscar los ingredientes de la pizza (utiliza el commando /pizza para ver que pizzas puedes buscar)")
 
@@ -199,6 +200,26 @@ def types_command_embutidos(update, context):
         result = qres['results']['bindings'][i]
         name = result['name']['value']
         update.message.reply_text( name)
+
+
+
+#NPL
+def nlp_texto(update, context):
+    update.message.reply_text("Ingresa un texto")
+    bot = context.bot
+    updateMsg = getattr(update, 'message', None)
+    #messageId = updateMsg.message_id #obtengo el id del mensaje
+    #chatId = update.message.chat_id
+    #txt = update.effective_user['texto']
+    mytxt = update.message.text #obtener el texto que envio el usuario
+    print(mytxt)
+    #update.message.reply_text(mytxt)
+    
+    doc = textspacy.spacy_info(mytxt)
+    for w in doc:
+        a = w.text, w.pos_
+        update.message.reply_text(a)
+        print(a)
 
 
 def handle_message(update, context):
@@ -271,6 +292,7 @@ if __name__ == '__main__':
     dp.add_handler(CommandHandler('listaCarnes',types_command_carnes))
     dp.add_handler(CommandHandler('listaEmbutidos',types_command_embutidos))
     dp.add_handler(CommandHandler('listPizza', types_command_listaPizza))
+    dp.add_handler(MessageHandler(Filters.text, nlp_texto))
     dp.add_handler(CommandHandler('pizza', pizza_command))
     dp.add_handler(CommandHandler(
         'ingredients', ingredients_command, pass_args=True))
@@ -286,6 +308,9 @@ if __name__ == '__main__':
     dp.add_handler(CallbackQueryHandler(seventh_menu, pattern='ma'))
     dp.add_handler(CallbackQueryHandler(eighth_menu, pattern='me'))
     dp.add_handler(CallbackQueryHandler(nineth_menu, pattern='mo'))
+
+
+    
 
     dp.add_handler(CallbackQueryHandler(first_submenu, pattern='m3'))
 
