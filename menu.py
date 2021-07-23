@@ -44,7 +44,7 @@ def first_menu_keyboard():
 
 def first_submenu_keyboard():
     keyboard = [[InlineKeyboardButton('Si, proceder a pagar',
-                                      url='https://github.com/jahurtadod/sematic-app-demo')],
+                                      url='https://github.com/JimmyPortilla/ChatBot-OWLPizzas')],
                 [InlineKeyboardButton('No, Menu Principal', callback_data='main')]]
     return InlineKeyboardMarkup(keyboard)
 
